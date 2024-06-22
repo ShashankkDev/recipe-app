@@ -1,4 +1,5 @@
 import { Heart, Home } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Sidebar = () => {
@@ -12,6 +13,17 @@ const Sidebar = () => {
 export default Sidebar;
 
 const DesktopSidebar = () => {
+  const [hasFavorites, setHasFavorites] = useState(false);
+
+  useEffect(() => {
+    const favorites = JSON.parse(localStorage.getItem("favorites"));
+    if (favorites && favorites.length > 0) {
+      setHasFavorites(true);
+    } else {
+      setHasFavorites(false);
+    }
+  }, [hasFavorites]);
+
   return (
     <div className="p-3 md:p-10 border-r min-h-screen w-24 md:w-64 hidden sm:block">
       <div className="flex flex-col gap-20 sticky top-10 left-0">
@@ -26,6 +38,9 @@ const DesktopSidebar = () => {
           </Link>
           <Link to={"/favorites"} className="flex gap-1">
             <Heart size={"24"} />
+            {hasFavorites && (
+              <span className="absolute md:bottom-4 md:left-4 left-10 bottom-4 bg-red-500 w-3 h-3 rounded-full"></span>
+            )}
             <span className="font-bold hidden md:block">Favorites</span>
           </Link>
         </ul>
