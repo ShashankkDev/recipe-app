@@ -20,6 +20,7 @@ const HomePage = () => {
       const data = await res.json();
       setRecipes(data.hits);
       console.log(data.hits);
+      console.log("thats me", data);
     } catch (error) {
       console.log(error.message);
     } finally {
