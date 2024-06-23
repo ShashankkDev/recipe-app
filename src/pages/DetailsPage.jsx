@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { RecipeContext } from "../pages/RecipeContext";
 import { FaYoutube } from "react-icons/fa";
+import { IoMdArrowBack } from "react-icons/io";
 
 const DetailsPage = () => {
   const { selectedRecipe } = useContext(RecipeContext);
@@ -16,8 +17,15 @@ const DetailsPage = () => {
 
   if (!selectedRecipe) return null;
 
+  const backbutton = () => {
+    navigate("/");
+  };
+
   return (
-    <div className="bg-white p-6  md:p-10 lg:p-16 max-w-screen-lg mx-auto rounded-lg mb-20">
+    <div className="bg-white relative p-6  md:p-10 lg:p-16 max-w-screen-lg mx-auto rounded-lg mb-20">
+      <button onClick={backbutton} className="absolute md:left-0 left-5 mb-8">
+        <IoMdArrowBack size={20} />
+      </button>
       <h1 className="font-bold text-3xl md:text-5xl mt-4 text-gray-800">
         {selectedRecipe.label}
       </h1>

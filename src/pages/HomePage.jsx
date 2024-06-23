@@ -9,18 +9,21 @@ const APP_KEY = import.meta.env.VITE_APP_KEY;
 const HomePage = () => {
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchRecipe, setSearchRecipe] = useState("biriyani");
 
   const fetchRecipes = async (searchQuery) => {
     setLoading(true);
     setRecipes([]);
+    setSearchRecipe(searchQuery);
     try {
       const res = await fetch(
         `https://api.edamam.com/api/recipes/v2/?app_id=${APP_ID}&app_key=${APP_KEY}&q=${searchQuery}&type=public`
       );
       const data = await res.json();
       setRecipes(data.hits);
+      localStorage.setItem("recipes", JSON.stringify(data.hits));
+      localStorage.setItem("searchRecipe", searchQuery);
       console.log(data.hits);
-      console.log("thats me", data);
     } catch (error) {
       console.log(error.message);
     } finally {
@@ -29,12 +32,25 @@ const HomePage = () => {
   };
 
   useEffect(() => {
-    fetchRecipes("biriyani");
+    const savedRecipes = localStorage.getItem("recipes");
+    const savedSearchRecipe = localStorage.getItem("searchRecipe");
+
+    if (savedRecipes) {
+      setRecipes(JSON.parse(savedRecipes));
+      setLoading(false);
+    } else {
+      fetchRecipes(searchRecipe);
+    }
+
+    if (savedSearchRecipe) {
+      setSearchRecipe(savedSearchRecipe);
+    }
   }, []);
 
   const handleSearchRecipe = (e) => {
     e.preventDefault();
-    fetchRecipes(e.target[0].value);
+    const query = e.target[0].value;
+    fetchRecipes(query);
   };
 
   return (
@@ -51,9 +67,7 @@ const HomePage = () => {
           </label>
         </form>
 
-        <h1 className="font-bold text-3xl md:text-5xl mt-4">
-          Recommended Recipes
-        </h1>
+        <h1 className="font-bold text-3xl md:text-5xl mt-4">Explore Recipes</h1>
         <p className="text-slate-500 font-semibold ml-1 my-2 text-sm tracking-tight">
           Popular choices
         </p>
@@ -80,4 +94,5 @@ const HomePage = () => {
     </div>
   );
 };
+
 export default HomePage;
